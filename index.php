@@ -8,8 +8,7 @@ if (isset($_SESSION['id']) && !isset($_SESSION['login_success'])) {
     // Optionally, you might want to unset other session variables related to login state
     // unset($_SESSION['login']);
 }
-if(isset($_POST['login']))
-{
+if (isset($_POST['login'])) {
     $emailreg = $_POST['emailreg'];
     $password = $_POST['password'];
 
@@ -21,10 +20,8 @@ if(isset($_POST['login']))
     $rs = $stmt->fetch();
     $stmt->close();
 
-    if($rs)
-    {
-        if(password_verify($password, $hashed_password))
-        {
+    if ($rs) {
+        if (password_verify($password, $hashed_password)) {
             $_SESSION['id'] = $id;
             $_SESSION['login'] = $emailreg;
             $uip = $_SERVER['REMOTE_ADDR'];
@@ -43,14 +40,10 @@ if(isset($_POST['login']))
             $_SESSION['login_success'] = true;
             header("Location: dashboard.php");
             exit();
-        }
-        else
-        {
+        } else {
             echo "<script>alert('Invalid Username/Email or password');</script>";
         }
-    }
-    else
-    {
+    } else {
         echo "<script>alert('Invalid Username/Email or password');</script>";
     }
 }
@@ -58,6 +51,7 @@ if(isset($_POST['login']))
 
 <!doctype html>
 <html lang="en" class="no-js">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -78,10 +72,8 @@ if(isset($_POST['login']))
     <script type="text/javascript" src="js/validation.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript">
-        function valid()
-        {
-            if(document.registration.password.value != document.registration.cpassword.value)
-            {
+        function valid() {
+            if (document.registration.password.value != document.registration.cpassword.value) {
                 alert("Password and Re-Type Password Field do not match  !!");
                 document.registration.cpassword.focus();
                 return false;
@@ -101,6 +93,7 @@ if(isset($_POST['login']))
             align-items: center;
             min-height: 100vh;
         }
+
         .login-form {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
@@ -115,31 +108,38 @@ if(isset($_POST['login']))
         .login-form input {
             margin-bottom: 20px;
         }
+
         .login-form h2 {
             text-align: center;
             margin-bottom: 30px;
             font-size: 24px;
             color: rgb(220, 234, 68);
         }
+
         .login-form .btn-primary {
             background-color: #4e73df;
             border-color: #4e73df;
         }
+
         .login-form .btn-primary:hover {
             background-color: #2e59d9;
             border-color: #2e59d9;
         }
+
         .forgot-password {
             text-align: center;
             color: black;
         }
+
         .forgot-password a {
             color: #007bff;
             text-decoration: none;
         }
+
         .forgot-password a:hover {
             text-decoration: underline;
         }
+
         .user-image {
             display: block;
             margin: 0 auto 20px;
@@ -148,9 +148,10 @@ if(isset($_POST['login']))
             border-radius: 50%;
             object-fit: cover;
         }
+
         body {
             background-image: url("img/bg5.jpg");
-            background-size:cover;
+            background-size: cover;
             background-repeat: no-repeat;
         }
 
@@ -168,6 +169,7 @@ if(isset($_POST['login']))
             z-index: 9999;
             backdrop-filter: blur(5px);
         }
+
         .loader {
             border: 10px solid #f3f3f3;
             border-top: 10px solid rgb(6, 70, 118);
@@ -176,20 +178,29 @@ if(isset($_POST['login']))
             height: 80px;
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        html, body {
-        margin: 0;
-        padding: 0;
-        overflow-y: hidden; /* or use auto if you want scroll only when needed */
-        overflow-x: hidden;
-        height: 100%;
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-y: hidden;
+            /* or use auto if you want scroll only when needed */
+            overflow-x: hidden;
+            height: 100%;
+        }
     </style>
 </head>
+
 <body>
     <!-- Loader -->
     <div id="overlayLoader">
@@ -224,4 +235,5 @@ if(isset($_POST['login']))
     </div>
 
 </body>
+
 </html>
