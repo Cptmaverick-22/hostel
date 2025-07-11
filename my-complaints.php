@@ -24,25 +24,24 @@ check_login();
 	<link rel="stylesheet" href="css/fileinput.min.css">
 	<link rel="stylesheet" href="css/awesome-bootstrap-checkbox.css">
 	<link rel="stylesheet" href="css/style.css">
-<script language="javascript" type="text/javascript">
-var popUpWin=0;
-function popUpWindow(URLStr, left, top, width, height)
-{
- if(popUpWin)
-{
-if(!popUpWin.closed) popUpWin.close();
-}
-popUpWin = open(URLStr,'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=yes,width='+510+',height='+430+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
-}
-</script>
+	<script language="javascript" type="text/javascript">
+		var popUpWin = 0;
+
+		function popUpWindow(URLStr, left, top, width, height) {
+			if (popUpWin) {
+				if (!popUpWin.closed) popUpWin.close();
+			}
+			popUpWin = open(URLStr, 'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=yes,width=' + 510 + ',height=' + 430 + ',left=' + left + ', top=' + top + ',screenX=' + left + ',screenY=' + top + '');
+		}
+	</script>
 
 </head>
 
 <body>
-	<?php include('includes/header.php');?>
+	<?php include('includes/header.php'); ?>
 
 	<div class="ts-main-content">
-			<?php include('includes/sidebar.php');?>
+		<?php include('includes/sidebar.php'); ?>
 		<div class="content-wrapper">
 			<div class="container-fluid">
 				<div class="row">
@@ -73,51 +72,51 @@ popUpWin = open(URLStr,'popUpWin', 'toolbar=no,location=no,directories=no,status
 										</tr>
 									</tfoot>
 									<tbody>
-<?php	
-$aid=$_SESSION['id'];
-$ret="select * from complaints where userId=?";
-$stmt= $mysqli->prepare($ret) ;
-$stmt->bind_param('i',$aid);
-$stmt->execute() ;//ok
-$res=$stmt->get_result();
-$cnt=1;
-while($row=$res->fetch_object())
-	  {
-	  	?>
-<tr><td><?php echo $cnt;;?></td>
-<td><?php echo $row->ComplainNumber;?></td>
-<td><?php echo $row->complaintType;?></td>
-<td><?php $cstatus=$row->complaintStatus;
-if($cstatus==''):
-	echo "New";
-else:
-echo $cstatus;
-endif;	
+										<?php
+										$aid = $_SESSION['id'];
+										$ret = "select * from complaints where userId=?";
+										$stmt = $mysqli->prepare($ret);
+										$stmt->bind_param('i', $aid);
+										$stmt->execute(); //ok
+										$res = $stmt->get_result();
+										$cnt = 1;
+										while ($row = $res->fetch_object()) {
+										?>
+											<tr>
+												<td><?php echo $cnt;; ?></td>
+												<td><?php echo $row->ComplainNumber; ?></td>
+												<td><?php echo $row->complaintType; ?></td>
+												<td><?php $cstatus = $row->complaintStatus;
+													if ($cstatus == ''):
+														echo "New";
+													else:
+														echo $cstatus;
+													endif;
 
-?></td>
-<td><?php echo $row->registrationDate;?></td>
+													?></td>
+												<td><?php echo $row->registrationDate; ?></td>
 
-<td>
-<a href="complaint-details.php?cid=<?php echo $row->id;?>" title="View Full Details"><i class="fa fa-desktop"></i></a>&nbsp;&nbsp;
-</td>
-										</tr>
-									<?php
-$cnt=$cnt+1;
-									 } ?>
-											
-										
+												<td>
+													<a href="complaint-details.php?cid=<?php echo $row->id; ?>" title="View Full Details"><i class="fa fa-desktop"></i></a>&nbsp;&nbsp;
+												</td>
+											</tr>
+										<?php
+											$cnt = $cnt + 1;
+										} ?>
+
+
 									</tbody>
 								</table>
 
-								
+
 							</div>
 						</div>
 
-					
+
 					</div>
 				</div>
 
-			
+
 
 			</div>
 		</div>

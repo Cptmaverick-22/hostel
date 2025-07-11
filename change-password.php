@@ -61,7 +61,7 @@ if (isset($_POST['changepwd'])) {
     <script type="text/javascript" src="js/jquery-1.11.3-jquery.min.js"></script>
     <script type="text/javascript" src="js/validation.min.js"></script>
 
-    
+
 
     <script type="text/javascript">
         function valid() {
