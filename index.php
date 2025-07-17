@@ -5,14 +5,12 @@ include('includes/config.php');
 // Check for stale session on login page
 if (isset($_SESSION['id']) && !isset($_SESSION['login_success'])) {
     unset($_SESSION['id']);
-    // Optionally, you might want to unset other session variables related to login state
-    // unset($_SESSION['login']);
 }
+// Login processing
 if (isset($_POST['login'])) {
     $emailreg = $_POST['emailreg'];
     $password = $_POST['password'];
 
-    // Only select hashed password from database
     $stmt = $mysqli->prepare("SELECT email, password, id FROM userregistration WHERE email=? OR regNo=?");
     $stmt->bind_param('ss', $emailreg, $emailreg);
     $stmt->execute();
@@ -68,32 +66,56 @@ if (isset($_POST['login'])) {
     <link rel="stylesheet" href="css/fileinput.min.css">
     <link rel="stylesheet" href="css/awesome-bootstrap-checkbox.css">
     <link rel="stylesheet" href="css/style.css">
-    <script type="text/javascript" src="js/jquery-1.11.3-jquery.min.js"></script>
-    <script type="text/javascript" src="js/validation.min.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-    <script type="text/javascript">
-        function valid() {
-            if (document.registration.password.value != document.registration.cpassword.value) {
-                alert("Password and Re-Type Password Field do not match  !!");
-                document.registration.cpassword.focus();
-                return false;
-            }
-            return true;
+
+    <!-- Gooey loader styles -->
+    <style>
+        #overlayLoader {
+            position: fixed;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(246, 249, 255, 0.82);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            backdrop-filter: blur(2px);
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        #overlayLoader.visible { display: flex; opacity: 1; }
+
+        .gooey-loader {
+            display: flex;
+            gap: 12px;
+        }
+        .gooey-loader span {
+            display: block;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #011246d0;
+            animation: gooey-bounce 0.8s infinite alternate;
+        }
+        .gooey-loader span:nth-child(2) {
+            animation-delay: 0.2s;
+            background: #032c57ff;
+        }
+        .gooey-loader span:nth-child(3) {
+            animation-delay: 0.4s;
+            background: #02416dff;
         }
 
-        function showLoader() {
-            document.getElementById('overlayLoader').style.display = 'flex';
+        @keyframes gooey-bounce {
+            0% { transform: translateY(0); filter: blur(0px);}
+            100% { transform: translateY(-30px); filter: blur(2px);}
         }
-    </script>
-    <style>
-        /* Custom styles for the login form */
+
+        /* Login page styles */
         .login-container {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
-
         .login-form {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
@@ -104,42 +126,34 @@ if (isset($_POST['login'])) {
             max-width: 400px;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-
         .login-form input {
             margin-bottom: 20px;
         }
-
         .login-form h2 {
             text-align: center;
             margin-bottom: 30px;
             font-size: 24px;
             color: rgb(220, 234, 68);
         }
-
         .login-form .btn-primary {
             background-color: #4e73df;
             border-color: #4e73df;
         }
-
         .login-form .btn-primary:hover {
             background-color: #2e59d9;
             border-color: #2e59d9;
         }
-
         .forgot-password {
             text-align: center;
             color: black;
         }
-
         .forgot-password a {
             color: #007bff;
             text-decoration: none;
         }
-
         .forgot-password a:hover {
             text-decoration: underline;
         }
-
         .user-image {
             display: block;
             margin: 0 auto 20px;
@@ -148,63 +162,28 @@ if (isset($_POST['login'])) {
             border-radius: 50%;
             object-fit: cover;
         }
-
         body {
             background-image: url("img/bg5.jpg");
             background-size: cover;
             background-repeat: no-repeat;
         }
-
-        /* Loader Styles */
-        #overlayLoader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.63);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-        }
-
-        .loader {
-            border: 10px solid #f3f3f3;
-            border-top: 10px solid rgb(6, 70, 118);
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             overflow-y: hidden;
-            /* or use auto if you want scroll only when needed */
             overflow-x: hidden;
             height: 100%;
         }
     </style>
 </head>
-
 <body>
-    <!-- Loader -->
+    <!-- Loader: Only one! -->
     <div id="overlayLoader">
-        <div class="loader"></div>
+        <div class="gooey-loader">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
 
     <?php include('includes/header-copy.php'); ?>
@@ -216,12 +195,12 @@ if (isset($_POST['login'])) {
                     <div class="login-form">
                         <img src="img/user.png" alt="User Image" class="user-image">
                         <h2>User Login</h2>
-                        <form action="" method="post" onsubmit="showLoader()">
+                        <form action="" method="post" autocomplete="off">
                             <label for="emailreg" class="text-uppercase text-sm">Email / Registration Number</label>
-                            <input type="text" name="emailreg" class="form-control mb" required="true" placeholder="Email / Registration Number">
+                            <input type="text" name="emailreg" class="form-control mb" required placeholder="Email / Registration Number">
 
                             <label for="password" class="text-uppercase text-sm">Password</label>
-                            <input type="password" name="password" class="form-control mb" required="true" placeholder="Password">
+                            <input type="password" name="password" class="form-control mb" required placeholder="Password">
 
                             <input type="submit" name="login" class="btn btn-primary btn-block" value="Login">
                         </form>
@@ -234,6 +213,34 @@ if (isset($_POST['login'])) {
         </div>
     </div>
 
-</body>
+    <!-- Scripts -->
+    <script src="js/jquery-1.11.3-jquery.min.js"></script>
+    <script src="js/validation.min.js"></script>
+    <script>
+        // Loader Show/Hide Logic
+        function showLoader() {
+            const overlay = document.getElementById('overlayLoader');
+            overlay.style.display = "flex";
+            setTimeout(() => overlay.classList.add('visible'), 10);
+        }
+        function hideLoader() {
+            const overlay = document.getElementById('overlayLoader');
+            overlay.classList.remove('visible');
+            setTimeout(() => { overlay.style.display = 'none'; }, 400);
+        }
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.querySelector('.login-form form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function() {
+                    showLoader();
+                });
+            }
+            // Hide loader after login error
+            <?php if(isset($_POST['login']) && (!isset($_SESSION['id']) || !isset($_SESSION['login_success']))) { ?>
+                setTimeout(hideLoader, 300);
+            <?php } ?>
+        });
+    </script>
+</body>
 </html>
